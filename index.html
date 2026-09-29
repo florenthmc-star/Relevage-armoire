@@ -108,9 +108,9 @@ footer.foot{text-align:center;color:var(--muted);font-size:13.5px;padding:8px 20
     <div class="field"><label for="L">Largeur<small>Laisser vide si inconnue</small></label><div class="inp"><input id="L" type="number" inputmode="numeric" value="600"><span>mm</span></div></div>
     <div class="field"><label for="C">Hauteur sous plafond<small>Au point le plus bas de la zone</small></label><div class="inp"><input id="C" type="number" inputmode="numeric" value="2002"><span>mm</span></div></div>
 
-    <p class="group-title">Ce qu'on peut démonter pour gagner de la place</p>
-    <div class="field"><label for="hp">Pieds compris dans la hauteur<small>0 si pas de pieds montés</small></label><div class="inp"><input id="hp" type="number" inputmode="numeric" value="0"><span>mm</span></div></div>
-    <div class="field"><label for="ef">Épaisseur des portes<small>0 si pas de portes montées</small></label><div class="inp"><input id="ef" type="number" inputmode="numeric" value="0"><span>mm</span></div></div>
+    <p class="group-title">Éléments à retirer avant de relever, le caisson reste monté</p>
+    <div class="field"><label for="hp">Pieds compris dans la hauteur<small>0 s'ils ne se retirent pas</small></label><div class="inp"><input id="hp" type="number" inputmode="numeric" value="0"><span>mm</span></div></div>
+    <div class="field"><label for="ef">Épaisseur des portes<small>0 si on ne les retire pas</small></label><div class="inp"><input id="ef" type="number" inputmode="numeric" value="0"><span>mm</span></div></div>
 
     <p class="group-title">Sécurité</p>
     <div class="field"><label for="m">Marge souhaitée<small>Plafond pas plan, sol, luminaire…</small></label><div class="inp"><input id="m" type="number" inputmode="numeric" value="15"><span>mm</span></div></div>
@@ -167,10 +167,10 @@ footer.foot{text-align:center;color:var(--muted);font-size:13.5px;padding:8px 20
     const add = (key, t, d, h, w) => { const diag = Math.hypot(h, w); list.push({key, t, d, h, w, diag, reste: C - diag}); };
     add("prof", "Sur la profondeur", "Telle quelle, comme elle arrive", H, P);
     if (hasL) add("larg", "Sur la largeur", "Telle quelle, en la faisant pivoter sur le côté", H, L);
-    if (ef > 0) add("prof-f", "Sur la profondeur, sans portes", "Portes démontées (−" + fmt(ef) + " mm)", H, P - ef);
+    if (ef > 0) add("prof-f", "Sur la profondeur, sans portes", "Portes retirées de leurs charnières (−" + fmt(ef) + " mm)", H, P - ef);
     if (hp > 0) add("prof-p", "Sur la profondeur, sans pieds", "Pieds montés une fois debout (−" + fmt(hp) + " mm)", H - hp, P);
     if (hp > 0 && hasL) add("larg-p", "Sur la largeur, sans pieds", "Pieds montés une fois debout", H - hp, L);
-    if (hp > 0 && ef > 0) add("prof-pf", "Sans pieds ni portes", "Sur la profondeur, tout démonté", H - hp, P - ef);
+    if (hp > 0 && ef > 0) add("prof-pf", "Sans pieds ni portes", "Sur la profondeur, pieds et portes retirés", H - hp, P - ef);
     list.forEach(s => s.st = status(s.reste, m));
     const reco = list.find(s => s.st === "ok") || list.find(s => s.st === "warn");
     return {H, P, L, C, hp, ef, m, list, reco};
@@ -200,7 +200,7 @@ footer.foot{text-align:center;color:var(--muted);font-size:13.5px;padding:8px 20
         (best ? "Pas telle quelle, mais il y a une solution" : "Elle ne passe pas") + '</h3><p>' +
         'Relevée sur la profondeur, il manque ' + fmt(-base.reste) + ' mm. ' +
         (best ? 'Solution : <b>' + best.t.toLowerCase() + '</b> (' + (best.reste >= 0 ? signed(best.reste) + ' mm de marge' : '') + ').'
-              : (r.hp === 0 && r.ef === 0 ? 'Indiquez les pieds ou les portes démontables pour tester d\'autres solutions, ou prévoyez un montage sur place.' : 'Aucune solution testée ne suffit : prévoir un montage sur place.')) +
+              : (r.hp === 0 && r.ef === 0 ? 'Si les pieds ou les portes peuvent être retirés, indiquez-les pour tester ces solutions. ' : '') + 'Sinon, la relever dans une pièce où le plafond est plus haut puis la déplacer debout, ou faire valider par le magasin un modèle moins haut.') +
         '</p></div>';
     }
 
